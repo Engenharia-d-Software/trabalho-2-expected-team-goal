@@ -1,10 +1,10 @@
 import uuid
 import streamlit as st
-from streamlit_card import card
-from streamlit_shadcn_ui import card as card_ui
 import streamlit_shadcn_ui as ui
 
 from control import task_step
+from control import issue
+
 import model
 import schemas
 
@@ -12,15 +12,30 @@ st.set_page_config(layout="wide")
 
 
 def header():
-    st.title("Quadro Kanban")
-    st.subheader("Gerencie suas tarefas de forma visual")
-    st.markdown("Gerencie suas *tarefas* de forma visual :pushpin:")
+    headerText, crudTask = st.columns(2)
+
+    with headerText:
+        st.title("Quadro Kanban")
+        st.subheader("Gerencie suas tarefas de forma visual")
+        st.markdown("Organize seu fluxo de trabalho de maneira simples e eficiente :pushpin:")
+
+    return crudTask
 
 
 def column_title(column, title):
     with column:
         st.header(title)
 
+def create_task(crud_colunm):
+    with crud_colunm:
+        task, description, createButton = st.columns(3, vertical_alignment="bottom")
+        task_title = task.text_input("Nova tarefa")
+        task_description = description.text_input("Descrição")
+        clicked = createButton.button("Criar")
+
+        if clicked:
+            return task_title,task_description
+        return None
 
 def add_card(column, issue: model.Issue):
     # Exemplo de card com imagem, título, texto e estilos personalizados
@@ -35,7 +50,12 @@ def add_card(column, issue: model.Issue):
 
 
 if __name__ == "__main__":
-    header()
+    crud_task_col = header()
+    task_data = create_task(crud_task_col)
+
+    if task_data:
+        created_task = issue.create_issue(task_data)
+        st.write(task_data)
 
     DEFAULT_COLUMN_NAMES = ["A Fazer", "Em Progresso", "Concluido"]
     ui_columns = st.columns(len(DEFAULT_COLUMN_NAMES), gap="medium", border=True)
