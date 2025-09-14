@@ -14,9 +14,9 @@ class IssueCreate(BaseModel):
 class IssueUpdate(BaseModel):
     title: str | None = None
     description: str | None = None
-    created_at: datetime | None
-    milestone: datetime | None
-    task_step_id: int | None
+    created_at: datetime | None = None
+    milestone: datetime | None = None
+    task_step_id: int | None = None
 
 
 class TaskStepCreate(BaseModel):
@@ -25,5 +25,5 @@ class TaskStepCreate(BaseModel):
 
 
 class TaskStepUpdate(BaseModel):
-    name: str | None
-    wip_limit: int | None
+    name: str | None = None
+    wip_limit: int | None = None
